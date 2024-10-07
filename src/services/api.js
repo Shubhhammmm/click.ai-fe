@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: "http://localhost:5000", // Backend API URL
+  baseURL: "https://foyr-backend.vercel.app", // Backend API URL
   withCredentials: false,               // Allow cross-origin cookies for OAuth
 });
 

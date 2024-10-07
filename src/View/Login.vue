@@ -10,7 +10,7 @@
 export default {
   methods: {
     loginWithGoogle() {
-      window.location.href = 'http://localhost:5000/auth/google';
+      window.location.href = 'https://foyr-backend.vercel.app/auth/google';
     },
   },
 };
