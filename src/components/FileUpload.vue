@@ -109,7 +109,7 @@
                   v-for="file in folder.files"
                   :key="file.id"
                   class="file-item"
-                  @dragstart="startDrag(file,folder)"
+                  @dragstart="startDrag(file, folder)"
                   draggable="true"
                   @dragend="clearDraggedFile"
                 >
@@ -174,37 +174,37 @@ export default {
     // Fetch all files and folders from the server
     async FetchAllFiles() {
       try {
-        const mail= await this.getCookie("lznk")
-        if(mail){
-        const data = await getFiles(mail);
-        const folderdata = await getFolders(mail);
-        this.files = [];
-        this.folders = [];
-        if (data) {
-          data.forEach((file) => {
-            const { _id, name, size, url, pathref } = file;
-            this.files.push({
-              name,
-              size,
-              source: url,
-              pathref,
-              id: _id,
+        const mail = await this.getCookie("lznk");
+        if (mail) {
+          const data = await getFiles(mail);
+          const folderdata = await getFolders(mail);
+          this.files = [];
+          this.folders = [];
+          if (data) {
+            data.forEach((file) => {
+              const { _id, name, size, url, pathref } = file;
+              this.files.push({
+                name,
+                size,
+                source: url,
+                pathref,
+                id: _id,
+              });
             });
-          });
-        }
-        if (folderdata && Array.isArray(folderdata)) {
-          this.folders = folderdata.map((folder) => {
-            const { files, _id, ...data } = folder;
+          }
+          if (folderdata && Array.isArray(folderdata)) {
+            this.folders = folderdata.map((folder) => {
+              const { files, _id, ...data } = folder;
 
-            const updatedFiles = files.map((file) => {
-              const { _id, ...rest } = file;
-              return { id: _id, ...rest };
+              const updatedFiles = files.map((file) => {
+                const { _id, ...rest } = file;
+                return { id: _id, ...rest };
+              });
+
+              return { ...data, id: _id, files: updatedFiles };
             });
-
-            return { ...data, id: _id, files: updatedFiles };
-          });
+          }
         }
-      }
       } catch (error) {
         console.error("Error fetching files and folders:", error);
         this.files = [];
@@ -225,22 +225,23 @@ export default {
       formData.append("file", this.newFile);
 
       try {
-        const mail= await this.getCookie("lznk")
-        if(mail){
-        const response = await uploadFile(formData,mail);
-        this.files.push({
-          name: this.newFile.name,
-          size: this.newFile.size,
-          source: response.fileUrl,
-          id: response.fileId,
-        });
-        this.newFile = null;
-        this.$refs.fileInput.value = "";
-        this.FetchAllFiles();
-      }
-      else{
-        alert("Your are not Authenticated user , pls Go to Login Page and Login First")
-      }
+        const mail = await this.getCookie("lznk");
+        if (mail) {
+          const response = await uploadFile(formData, mail);
+          this.files.push({
+            name: this.newFile.name,
+            size: this.newFile.size,
+            source: response.fileUrl,
+            id: response.fileId,
+          });
+          this.newFile = null;
+          this.$refs.fileInput.value = "";
+          this.FetchAllFiles();
+        } else {
+          alert(
+            "Your are not Authenticated user , pls Go to Login Page and Login First"
+          );
+        }
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -249,34 +250,35 @@ export default {
     // Create a new folder
     async createFolder() {
       if (this.newFolderName.trim()) {
-        const mail= await this.getCookie("lznk")
-        if(mail){
-          await uploadFolder(this.newFolderName,mail);
+        const mail = await this.getCookie("lznk");
+        if (mail) {
+          await uploadFolder(this.newFolderName, mail);
           this.FetchAllFiles();
-        }
-        else{
-          alert("Your are not Authenticated user , pls Go to Login Page and Login First")
+        } else {
+          alert(
+            "Your are not Authenticated user , pls Go to Login Page and Login First"
+          );
         }
         this.newFolderName = "";
       }
     },
 
     // Start dragging file to drop into folder
-    startDrag(file,sourceFolder) {
+    startDrag(file, sourceFolder) {
       this.draggedFile = file;
-      this.sourceFolder = sourceFolder; 
+      this.sourceFolder = sourceFolder;
     },
 
     // Clear dragged file on drag end
     clearDraggedFile() {
       this.draggedFile = null;
-      this.sourceFolder=null;
+      this.sourceFolder = null;
     },
 
     // Drop file into the target folder
     async dropFile(targetFolder) {
       if (this.draggedFile) {
-        const mail= await this.getCookie("lznk")
+        const mail = await this.getCookie("lznk");
 
         if (this.draggedFile.pathref == "file") {
           alert("We can't move file to self List");
@@ -299,14 +301,14 @@ export default {
     async dropFileInFolder(targetFolder) {
       try {
         if (this.draggedFile) {
-          const mail= await this.getCookie("lznk")
+          const mail = await this.getCookie("lznk");
           if (this.draggedFile.pathref != targetFolder.name) {
             const fileFolder = this.files.some(
               (file) => file.id === this.draggedFile.id
             );
 
             if (fileFolder) {
-              console.log("ifFilefolder")
+              console.log("ifFilefolder");
               await updatePath(
                 this.draggedFile.id,
                 targetFolder.name,
@@ -316,7 +318,7 @@ export default {
                 mail
               );
             } else {
-              console.log("elseFilefolder",this.sourceFolder.id)
+              console.log("elseFilefolder", this.sourceFolder.id);
               await updatePath(
                 this.draggedFile.id,
                 targetFolder.name,
@@ -414,10 +416,18 @@ export default {
     },
     async getUserData() {
       try {
-        const response = await axios.get("https://foyr-backend.vercel.app/auth/session", {
-          withCredentials: true,
-        });
-        this.setCookie("lznk", response.data.user.email);
+        // const response = await axios.get("https://foyr-backend.vercel.app/auth/session", {
+        //   withCredentials: true,
+        // });
+        fetch("https://foyr-backend.vercel.app/auth/session", {
+          method: "GET",
+          credentials: "include",
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          this.setCookie("lznk", data.data.user.email);
+        })
+        .catch((err) => console.error(err));
       } catch (error) {
         console.error("Error deleting file:", error);
       }
@@ -448,12 +458,12 @@ export default {
     },
 
     async checkAuth() {
-     setTimeout(async() => {
-     const data= await this.getCookie("lznk")
-     if(data=="No token found"){
-      this.$router.push('/');
-     }
-     }, 2000);
+      setTimeout(async () => {
+        const data = await this.getCookie("lznk");
+        if (data == "No token found") {
+          this.$router.push("/");
+        }
+      }, 2000);
     },
 
     formatFileSize(size) {
@@ -471,7 +481,6 @@ export default {
 </script>
 
 <style>
-
 .flexCC-C {
   display: flex;
   flex-direction: column;
