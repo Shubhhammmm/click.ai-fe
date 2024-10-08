@@ -25,6 +25,10 @@ export default {
         transports: ["websocket", "polling"],
       });
 
+      this.socket.on('connected', (data) => {
+       console.log("socket",data)
+      });
+
       this.socket.on("upload-progress-file", (data) => {
         this.message="File Uploading"
         this.percentage = data;
