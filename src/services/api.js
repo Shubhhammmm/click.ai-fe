@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: "backendurl", // Backend API URL
+  baseURL: "https://click-ai-be.onrender.com", // Backend API URL
   withCredentials: false,               // Allow cross-origin cookies for OAuth
 });
 
