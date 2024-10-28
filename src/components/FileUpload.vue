@@ -414,7 +414,7 @@ export default {
     },
     async getUserData() {
       try {
-        const response = await axios.get("https://foyr-backend.vercel.app/auth/session", {
+        const response = await axios.get("backendurl/auth/session", {
           withCredentials: true,
         });
         this.setCookie("lznk", response.data.user.email);

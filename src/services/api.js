@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: "https://foyr-backend.vercel.app", // Backend API URL
+  baseURL: "backendurl", // Backend API URL
   withCredentials: false,               // Allow cross-origin cookies for OAuth
 });
 

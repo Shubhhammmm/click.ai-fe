@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     loginWithGoogle() {
-      window.location.href = 'https://foyr-backend.vercel.app/auth/google';
+      window.location.href = 'backendurl/auth/google';
     },
     toggleForm() {
       this.isLogin = !this.isLogin;
@@ -122,7 +122,7 @@ export default {
   }
   try {
     const response = await axios.post(
-      "https://foyr-backend.vercel.app/auth/user/register",
+      "backendurl/auth/user/register",
       {
         Name: this.name,
         email: this.email,
@@ -146,7 +146,7 @@ export default {
     },
     async loginUser() {
       try {
-          const response = await axios.post("https://foyr-backend.vercel.app/auth/user/login", {
+          const response = await axios.post("backendurl/auth/user/login", {
             email: this.email,
             password: this.password,
           });
